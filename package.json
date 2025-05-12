@@ -8,9 +8,19 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
+    "express": "^5.1.0",
     "firebase-admin": "^13.3.0",
     "firebase-functions": "^6.3.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adindahahahaha/ServerFallGuard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adindahahahaha/ServerFallGuard/issues"
+  },
+  "homepage": "https://github.com/adindahahahaha/ServerFallGuard#readme",
+  "devDependencies": {},
+  "description": ""
 }

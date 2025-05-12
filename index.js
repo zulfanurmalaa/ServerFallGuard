@@ -1,5 +1,9 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccountKey.json");
+const path = require("path");
+
+// Load service account dari ENV (Render Secret File)
+const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || "./serviceAccountKey.json";
+const serviceAccount = require(serviceAccountPath);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -75,3 +79,15 @@ async function checkStatus() {
 }
 
 setInterval(checkStatus, 1000);
+
+const express = require("express");
+const app = express();
+
+app.get("/healthz", (req, res) => {
+  res.status(200).send("OK");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Service berjalan di port ${PORT}`);
+});
