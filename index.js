@@ -1,9 +1,5 @@
 const admin = require("firebase-admin");
-const path = require("path");
-
-// Load service account dari ENV (Render Secret File)
-const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || "./serviceAccountKey.json";
-const serviceAccount = require(serviceAccountPath);
+const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG_JSON);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
