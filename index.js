@@ -1,5 +1,12 @@
 const admin = require("firebase-admin");
+
+if (!process.env.FIREBASE_CONFIG_JSON) {
+  console.error("❌ FIREBASE_CONFIG_JSON is not set!");
+  process.exit(1);
+}
+
 const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG_JSON);
+serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -23,9 +30,9 @@ async function checkStatus() {
 
       if (status && status.toLowerCase().includes("jatuh")) {
         const isFirstFall = previousStatus && !previousStatus.toLowerCase().includes("jatuh");
-        const fiveMinutesPassed = (currentTime - lastNotificationTime) >= 3 * 60 * 1000;
+        const threeMinutesPassed = (currentTime - lastNotificationTime) >= 3 * 60 * 1000;
 
-        if (isFirstFall || fiveMinutesPassed) {
+        if (isFirstFall || threeMinutesPassed) {
           const fcmTokenSnapshot = await sensorDataRef.child("fcmToken").once("value");
           const fcmToken = fcmTokenSnapshot.val();
 
@@ -51,26 +58,26 @@ async function checkStatus() {
             };
 
             await admin.messaging().send(message);
-            console.log("Notifikasi berhasil dikirim");
+            console.log("✅ Notifikasi berhasil dikirim");
 
             await sensorDataRef.child("notified").set(true);
             lastNotificationTime = currentTime;
           } else {
-            console.log("FCM Token tidak ditemukan");
+            console.log("⚠️ FCM Token tidak ditemukan");
           }
         } else {
-          console.log("Status masih jatuh, menunggu 3 menit sebelum kirim notifikasi lagi");
+          console.log("⌛ Status masih jatuh, menunggu 3 menit sebelum kirim notifikasi lagi");
         }
       } else {
-        console.log("Status tidak jatuh");
+        console.log("✅ Status tidak jatuh");
       }
 
       previousStatus = status;
     } else {
-      console.log("Tidak ada data sensor");
+      console.log("⚠️ Tidak ada data sensor");
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("❌ Error:", error);
   }
 }
 
@@ -85,5 +92,5 @@ app.get("/healthz", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Service berjalan di port ${PORT}`);
+  console.log(`🚀 Service berjalan di port ${PORT}`);
 });
