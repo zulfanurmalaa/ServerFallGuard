@@ -37,6 +37,10 @@ async function checkStatus() {
           const fcmToken = fcmTokenSnapshot.val();
 
           if (fcmToken) {
+            const serverTimeRef = db.ref("/.info/serverTimeOffset");
+            const offsetSnapshot = await serverTimeRef.once("value");
+            const offset = offsetSnapshot.val() || 0;
+            const estimatedServerTimeMs = Date.now() + offset;
             const message = {
               notification: {
                 title: "🚨 Fall Detected!",
@@ -45,7 +49,7 @@ async function checkStatus() {
               data: {
                 title: "🚨 Fall Detected!",
                 body: "Seseorang terjatuh! Segera cek!",
-                sentAt: Date.now().toString()
+                sentAt: estimatedServerTimeMs.toString(),
               },
               token: fcmToken,
               android: {
@@ -59,7 +63,7 @@ async function checkStatus() {
             };
 
             await admin.messaging().send(message);
-            console.log("✅ Notifikasi berhasil dikirim");
+            console.log("✅ Notifikasi berhasil dikirim pada", estimatedServerTimeMs);
 
             await sensorDataRef.child("notified").set(true);
             lastNotificationTime = currentTime;
