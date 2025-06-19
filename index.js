@@ -45,6 +45,7 @@ async function checkStatus() {
               data: {
                 title: "🚨 Fall Detected!",
                 body: "Seseorang terjatuh! Segera cek!",
+                sentAt: Date.now().toString()
               },
               token: fcmToken,
               android: {
