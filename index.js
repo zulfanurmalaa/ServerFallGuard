@@ -10,7 +10,7 @@ serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://fall-detection-1-c2dae-default-rtdb.firebaseio.com/"
+  databaseURL: "https://fall-guard-b99c3-default-rtdb.asia-southeast1.firebasedatabase.app"
 });
 
 const db = admin.database();
